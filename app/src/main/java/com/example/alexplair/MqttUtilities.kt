@@ -88,14 +88,20 @@ public object MqttUtilities {
         return true
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun publishMessage(message:String,topic:String) {
-        if (!this::client.isInitialized && !client.isConnected) {
+    fun publishMessage(message:String,topic:String):Boolean {
+        while (!this::client.isInitialized && !client.isConnected) {
             Connect()
+
+            Log.d("DEBUG","Reconnecting to mqtt")
         }
+
         val current = LocalDateTime.now().format(formatter)
 
         var mqttMessage = MqttMessage(message.toByteArray(StandardCharsets.UTF_8))
-
-        client.publish(topic, mqttMessage)
+        if (client.isConnected) {
+            client.publish(topic, mqttMessage)
+            return true
+        }
+        return false
     }
 }
