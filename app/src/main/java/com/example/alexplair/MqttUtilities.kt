@@ -71,6 +71,7 @@ public object MqttUtilities {
             client.connect(options)
         }
         catch (e:Exception) {
+            Log.e(ContentValues.TAG, "mqtt error, ${e.toString()}")
             return false
         }
 
@@ -94,6 +95,7 @@ public object MqttUtilities {
         val current = LocalDateTime.now().format(formatter)
 
         var mqttMessage = MqttMessage(message.toByteArray(StandardCharsets.UTF_8))
+
         client.publish(topic, mqttMessage)
     }
 }
